@@ -1,0 +1,10 @@
+# UPDATE DO SISTEMA BANCÁRIO
+Crie duas funções:
+  Cadastro de usuários: nome, Data nascmiento, cpf e endereço. observar colisão de dados de cpf.
+  Cadastro de conta corrente (vincular com o usuário): numero da conta é sequencial, começando em 1. agencia fixo 0001, 
+
+  Criar funções para as opções que ja existiam: Sacar, depositar e extrato.
+  Saque: keyword only
+  Deposito: Position only
+
+  Caso queira criar, excluir conta, listar conta, é opcional
