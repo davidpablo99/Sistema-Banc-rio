@@ -1,0 +1,56 @@
+movimentacoes = []
+quantidadeSaqueDiario = 0
+valorTotalSaquesDiarios = 0.0
+saldo = 0
+run = True
+LIMITE_SAQUES_DIARIOS = 3
+LIMITE_VALOR_SAQUE = 500.0
+
+while run:
+    choice = int(input('''
+          
+          ## SISTEMA BANCÁRIO ##
+          
+          Escolha o que deseja fazer:
+          1. Depositar
+          2. Sacar
+          3. Extrato
+          4. Sair
+          
+          '''))
+
+    if choice == 1:
+        deposito = float(input("Quantos R$ você deseja depositar?\n"))
+        saldo += deposito
+        print("Depósito realizado com sucesso!")
+        movimentacoes.append(f'Depósito: +R$ {deposito:.2f}')
+        
+    elif choice == 2:
+        if quantidadeSaqueDiario < LIMITE_SAQUES_DIARIOS:
+            saque = float(input("Quantos R$ você deseja sacar?\n"))
+            if saque <= LIMITE_VALOR_SAQUE:
+                if saldo < saque:
+                    print("Saldo insuficiente.")
+                else:
+                    saldo -= saque
+                    quantidadeSaqueDiario += 1
+                    valorTotalSaquesDiarios += saque
+                    movimentacoes.append(f'Saque: -R$ {saque:.2f}')
+                    print("Saque realizado com sucesso!")
+            else:
+                print(f"O limite de saque é de R$ {LIMITE_VALOR_SAQUE:.2f}.")
+        else:
+            print("Quantidade máxima de saques diários excedida!")
+        
+    elif choice == 3:
+        print(f"Este é seu saldo atual: R$ {saldo:.2f}")
+        print("Suas movimentações:")
+        for mov in movimentacoes:
+            print(mov)
+        print(f"Quantidade de saques diários: {quantidadeSaqueDiario}")
+        print(f"Valor total de saques diários: R$ {valorTotalSaquesDiarios:.2f}")
+        
+    elif choice == 4:
+        run = False
+    else:
+        print("Opção inválida. Tente novamente.")
