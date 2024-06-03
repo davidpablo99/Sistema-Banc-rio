@@ -1,10 +1,111 @@
-# UPDATE DO SISTEMA BANCÁRIO
-Crie duas funções:
-  Cadastro de usuários: nome, Data nascmiento, cpf e endereço. observar colisão de dados de cpf.
-  Cadastro de conta corrente (vincular com o usuário): numero da conta é sequencial, começando em 1. agencia fixo 0001, 
+movimentacoes = []
+quantidadeSaqueDiario = 0
+valorTotalSaquesDiarios = 0.0
+saldo = 0.0
+run = True
+LIMITE_SAQUES_DIARIOS = 3
+LIMITE_VALOR_SAQUE = 500.0
+usuarios = []
+proximo_numero_conta = 1
+AGENCIA_FIXA = "0001"
 
-  Criar funções para as opções que ja existiam: Sacar, depositar e extrato.
-  Saque: keyword only
-  Deposito: Position only
+def depositar():
+    global saldo, movimentacoes
+    deposito = float(input("Quantos R$ você deseja depositar?\n"))
+    saldo += deposito
+    print("Depósito realizado com sucesso!")
+    movimentacoes.append(f'Depósito: +R$ {deposito:.2f}')
 
-  Caso queira criar, excluir conta, listar conta, é opcional
+def sacar():
+    global saldo, movimentacoes, quantidadeSaqueDiario, valorTotalSaquesDiarios
+    if quantidadeSaqueDiario < LIMITE_SAQUES_DIARIOS:
+        saque = float(input("Quantos R$ você deseja sacar?\n"))
+        if saque <= LIMITE_VALOR_SAQUE:
+            if saldo < saque:
+                print("Saldo insuficiente.")
+            else:
+                saldo -= saque
+                quantidadeSaqueDiario += 1
+                valorTotalSaquesDiarios += saque
+                movimentacoes.append(f'Saque: -R$ {saque:.2f}')
+                print("Saque realizado com sucesso!")
+        else:
+            print(f"O limite de saque é de R$ {LIMITE_VALOR_SAQUE:.2f}.")
+    else:
+        print("Quantidade máxima de saques diários excedida!")
+
+def extrato():
+    global saldo, movimentacoes, quantidadeSaqueDiario, valorTotalSaquesDiarios
+    print(f"Este é seu saldo atual: R$ {saldo:.2f}")
+    print("Suas movimentações:")
+    for mov in movimentacoes:
+        print(mov)
+    print(f"Quantidade de saques diários: {quantidadeSaqueDiario}")
+    print(f"Valor total de saques diários: R$ {valorTotalSaquesDiarios:.2f}")
+
+def cadastroUsuario():
+    global usuarios, proximo_numero_conta
+    cpf = int(input("Cpf para cadastro: "))
+    if cpf not in [user['cpf'] for user in usuarios]:
+        nome_usuario = input("Informe o nome do usuário para o cadastro: ")
+        data_nascimento = input("Data de nascimento: ")
+        print("Digite seu endereço:\n")
+        rua = input("Rua: ")
+        n = input('Número: ')
+        bairro = input("Bairro: ")
+        cidade = input("Cidade: ")
+        endereco = {
+            'rua': rua,
+            'numero': n,
+            'bairro': bairro,
+            'cidade': cidade
+        }
+        conta_corrente = str(proximo_numero_conta).zfill(6)
+        proximo_numero_conta += 1
+        usuario = {
+            'nome': nome_usuario,
+            'cpf': cpf,
+            'data_nascimento': data_nascimento,
+            'endereco': endereco,
+            'conta_corrente': conta_corrente,
+            'agencia': AGENCIA_FIXA
+        }
+        usuarios.append(usuario)
+        print("Usuário cadastrado com sucesso!")
+        print(f"Conta corrente: {conta_corrente} Agência: {AGENCIA_FIXA}")
+    else:
+        print("Este usuário já está cadastrado!")
+
+while run:
+    choice = int(input('''
+    
+    ## SISTEMA BANCÁRIO ##
+    
+    Escolha o que deseja fazer:
+    1. Depositar
+    2. Sacar
+    3. Extrato
+    4. Cadastrar Usuário
+    5. Listar contas
+    6. Sair
+    
+    '''))
+
+    if choice == 1:
+        depositar()
+    elif choice == 2:
+        sacar()
+    elif choice == 3:
+        extrato()
+    elif choice == 4:
+        cadastroUsuario()
+    elif choice == 5:
+        if not usuarios:
+            print("Lista de usuários vazia!")
+        else:
+            for usuario in usuarios:
+                print(f"Nome: {usuario['nome']}, CPF: {usuario['cpf']}, Conta Corrente: {usuario['conta_corrente']}, Agência: {usuario['agencia']}")
+    elif choice == 6:
+        run = False
+    else:
+        print("Opção inválida. Tente novamente.")
